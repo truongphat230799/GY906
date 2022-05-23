@@ -5,7 +5,7 @@ _REGISTER_TOBJ1 = const(0x07)  # object
 _REGISTER_TOBJ2 = const(0x08)  # object2
 
 class MLX90614:
-	def __init__(self, i2c, address=0x0E):
+	def __init__(self, i2c, address=0x5A):
 		self.i2c = i2c
 		self.address = address
 		_config1 = i2c.readfrom_mem(address, 0x25, 2)
