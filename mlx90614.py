@@ -19,7 +19,7 @@ class MLX90614:
 	def read_temp(self, register):
 		temp = self.read16(register);
 		# apply measurement resolution (0.02 degrees per LSB)
-		temp *= .02;
+		#temp *= .02;
 		# Kelvin to Celcius
 		temp -= 273.15;
 		return temp;
