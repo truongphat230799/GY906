@@ -5,7 +5,7 @@ Blockly.Blocks["mlx90614_read_ambient_temp"] = {
       message0: 'đọc nhiệt độ môi trường',
       args0: '',
       output: null,
-      colour: "#33aaa",
+      colour: "#33aaaa",
       
     });
   },
@@ -30,7 +30,7 @@ Blockly.Blocks["mlx90614_read_object_temp"] = {
       message0: 'đọc nhiệt độ cơ thể',
       args0: '',
       output: null,
-      colour: "#33aaa",
+      colour: "#33aaaa",
       
     });
   },
