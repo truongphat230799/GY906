@@ -19,8 +19,8 @@ Blockly.Python["mlx90614_read_ambient_temp"] = function(block) {
   // TODO: Assemble Python into code variable.
   Blockly.Python.definitions_['import_i2c'] = 'from machine import Pin, SoftI2C';
   Blockly.Python.definitions_["import_mlx90614"] = "from mlx90614 import MLX90614";
-  Blockly.Python.definitions_["import_create_mlx90614"] = "mlx90614 = MLX90614(SoftI2C(scl=Pin(22), sda=Pin(21)))";
-  var code = "mlx90614.read_ambient_temp()";
+  Blockly.Python.definitions_["import_create_mlx90614"] = "mlx = mlx90614.MLX90614(SoftI2C(scl=Pin(22), sda=Pin(21)))";
+  var code = "mlx.read_ambient_temp()";
   // TODO: Change ORDER_NONE to the correct strength.
   return [code, Blockly.Python.ORDER_NONE];
 };
@@ -44,8 +44,8 @@ Blockly.Python["mlx90614_read_object_temp"] = function(block) {
   // TODO: Assemble Python into code variable.
   Blockly.Python.definitions_['import_i2c'] = 'from machine import Pin, SoftI2C';
   Blockly.Python.definitions_["import_mlx90614"] = "from mlx90614 import MLX90614";
-  Blockly.Python.definitions_["import_create_mlx90614"] = "mlx90614 = MLX90614(SoftI2C(scl=Pin(22), sda=Pin(21)))";
-  var code = "mlx90614.read_object_temp()";
+  Blockly.Python.definitions_["import_create_mlx90614"] = "mlx = mlx90614.MLX90614(SoftI2C(scl=Pin(22), sda=Pin(21)))";
+  var code = "mlx.read_object_temp()";
   // TODO: Change ORDER_NONE to the correct strength.
   return [code, Blockly.Python.ORDER_NONE];
 };
