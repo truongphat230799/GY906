@@ -1,62 +1,76 @@
-import ustruct
+from time import sleep
 
-class SensorBase:
 
-	def read16(self, register):
-		data = self.i2c.readfrom_mem(self.address, register, 2)
-		return ustruct.unpack('<H', data)[0]
+class MLX90614():
 
-	def read_temp(self, register):
-		temp = self.read16(register);
-		# apply measurement resolution (0.02 degrees per LSB)
-		temp *= .02;
-		# Kelvin to Celcius
-		temp -= 273.15;
-		return temp;
+    # RAM offsets with 16-bit data, MSB first
+    # Raw data IR channel 1
+    MLX90614_RAWIR1 = 0x04
+    # Raw data IR channel 2
+    MLX90614_RAWIR2 = 0x05
+    # Ambient temperature
+    MLX90614_TA = 0x06
+    # Object 1 temperature
+    MLX90614_TOBJ1 = 0x07
+    # Object 2 temperature
+    MLX90614_TOBJ2 = 0x08
 
-	def read_ambient_temp(self):
-		return self.read_temp(self._REGISTER_TA)
+    # EEPROM offsets with 16-bit data, MSB first
+    # Object temperature max register
+    MLX90614_TOMAX = 0x20
+    # Object temperature min register
+    MLX90614_TOMIN = 0x21
+    # PWM configuration register
+    MLX90614_PWMCTRL = 0x22
+    # Ambient temperature register
+    MLX90614_TARANGE = 0x23
+    # Emissivity correction register
+    MLX90614_EMISS = 0x24
+    # Configuration register
+    MLX90614_CONFIG = 0x25
+    # Slave address register
+    MLX90614_ADDR = 0x2E
+    # 1 ID register (read-only)
+    MLX90614_ID1 = 0x3C
+    # 2 ID register (read-only)
+    MLX90614_ID2 = 0x3D
+    # 3 ID register (read-only)
+    MLX90614_ID3 = 0x3E
+    # 4 ID register (read-only)
+    MLX90614_ID4 = 0x3F
 
-	def read_object_temp(self):
-		return self.read_temp(self._REGISTER_TOBJ1)
+    comm_retries = 5
+    comm_sleep_amount = 0.1
 
-	def read_object2_temp(self):
-		if self.dual_zone:
-			return self.read_temp(self._REGISTER_TOBJ2)
-		else:
-			raise RuntimeError("Device only has one thermopile")
+    def __init__(self, i2c, address=0x5A):
+        self.bus = i2c
+        self.address = address
 
-	@property
-	def ambient_temp(self):
-		return self.read_ambient_temp()
+    def read_reg(self, reg_addr):
+        err = None
+        for i in range(self.comm_retries):
+            try:
+                return self.i2c.read_word_data(self.address, reg_addr)
+            except:
+                err = e
+                # "Rate limiting" - sleeping to prevent problems with sensor
+                # when requesting data too quickly
+                sleep(self.comm_sleep_amount)
+        # By this time, we made a couple requests and the sensor didn't respond
+        # (judging by the fact we haven't returned from this function yet)
+        # So let's just re-raise the last IOError we got
+        raise err
 
-	@property
-	def object_temp(self):
-		return self.read_object_temp()
+    def read_temp(self, reg):
+        data = self.read_reg(reg)
+        temp = (data * 0.02) - 273.15
+        return temp
 
-	@property
-	def object2_temp(self):
-		return self.read_object2_temp()
+    def get_amb_temp(self):
+        return self.read_temp(self.MLX90614_TA)
 
-class MLX90614(SensorBase):
+    def get_obj_temp(self):
+        return self.read_temp(self.MLX90614_TOBJ1)
 
-	_REGISTER_TA = 0x06
-	_REGISTER_TOBJ1 = 0x07
-	_REGISTER_TOBJ2 = 0x08
-
-	def __init__(self, i2c, address=0x5a):
-		self.i2c = i2c
-		self.address = address
-		_config1 = i2c.readfrom_mem(address, 0x25, 2)
-		_dz = ustruct.unpack('<H', _config1)[0] & (1<<6)
-		self.dual_zone = True if _dz else False
-
-class MLX90615(SensorBase):
-
-	_REGISTER_TA = 0x26
-	_REGISTER_TOBJ1 = 0x27
-
-	def __init__(self, i2c, address=0x5b):
-		self.i2c = i2c
-		self.address = address
-		self.dual_zone = False
+    def get_object_2(self):
+        return self.read_temp(self.MLX90614_TOBJ2)
