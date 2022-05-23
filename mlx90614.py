@@ -43,7 +43,7 @@ class MLX90614():
     comm_sleep_amount = 0.1
 
     def __init__(self, i2c, address=0x5a):
-        self.bus = bus
+        self.bus = i2c
         self.address = address
 
     def read_reg(self, reg_addr):
