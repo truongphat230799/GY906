@@ -1,0 +1,6 @@
+<xml xmlns="https://developers.google.com/blockly/xml" id="toolbox" style="display: none">
+  <category name="MLX90614" colour="#33aaaa" icon="sun">
+    <block type="mlx90614_read_object_temp"></block>
+    <block type="mlx90614_read_ambient_temp"></block>
+  </category>
+</xml>

@@ -1,0 +1,14 @@
+{
+    "name": "MLX90614",
+    "description": "Mục mở rộng hỗ trợ cảm biến GY 906",
+    "libs": [
+        "mlx90614.py"
+    ],
+    "blocks": [
+        "definition.js"
+    ],
+    "toolbox": "toolbox.xml",
+    "languages": {
+    },
+    "poster": "poster.png"
+}
