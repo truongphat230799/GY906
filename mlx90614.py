@@ -42,15 +42,15 @@ class MLX90614():
     comm_retries = 5
     comm_sleep_amount = 0.1
 
-    def __init__(self, bus, address=0x5A):
-        self.bus = bus
+    def __init__(self, i2c, address=0x5A):
+        self.bus = i2c
         self.address = address
 
     def read_reg(self, reg_addr):
         err = None
         for i in range(self.comm_retries):
             try:
-                return self.bus.read_word_data(self.address, reg_addr)
+                return self.i2c.read_word_data(self.address, reg_addr)
             except IOError as e:
                 err = e
                 # "Rate limiting" - sleeping to prevent problems with sensor
